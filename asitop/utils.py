@@ -68,6 +68,7 @@ def run_powermetrics_process(timecode, nice=10, interval=1000):
 def get_ram_metrics_dict():
     ram_metrics = psutil.virtual_memory()
     swap_metrics = psutil.swap_memory()
+
     total_GB = convert_to_GB(ram_metrics.total)
     free_GB = convert_to_GB(ram_metrics.available)
     used_GB = convert_to_GB(ram_metrics.total-ram_metrics.available)
@@ -89,6 +90,26 @@ def get_ram_metrics_dict():
         "swap_free_percent": swap_free_percent,
     }
     return ram_metrics_dict
+
+def get_networkr():
+    s1 = psutil.net_io_counters()
+    time.sleep(1)
+    s2 = psutil.net_io_counters()
+    result = s2.bytes_recv - s1.bytes_recv
+    if (result / 1024)< 1024 :
+        return str('%.1f'%(result / 1024)) + ' KB/s'
+    else:
+        return str('%.2f'%(result / 1048576)) + ' MB/s'
+
+def get_networks():
+    s1 = psutil.net_io_counters()
+    time.sleep(1)
+    s2 = psutil.net_io_counters()
+    result = s2.bytes_sent - s1.bytes_sent
+    if (result / 1024)< 1024 :
+        return str('%.1f'%(result / 1024)) + ' KB/s'
+    else:
+        return str('%.2f'%(result / 1048576)) + ' MB/s'
 
 
 def get_cpu_info():
